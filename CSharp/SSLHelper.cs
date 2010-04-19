@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Web;
 using SecureSwitch.Configuration;
 
@@ -28,7 +29,11 @@ namespace SecureSwitch {
 		/// A flag indicating whether or not to ingore the current protocol when determining.
 		/// </param>
 		/// <returns>A string containing the absolute URL of the secure page to redirect to.</returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static string DetermineSecurePage(Settings settings, bool ignoreCurrentProtocol) {
+			if (settings == null)
+				throw new ArgumentNullException("settings");
+
 			string Result = null;
 			HttpRequest Request = HttpContext.Current.Request;
 
@@ -36,7 +41,7 @@ namespace SecureSwitch {
 			string RequestPath = Request.Url.AbsoluteUri;
 			if (ignoreCurrentProtocol || RequestPath.StartsWith(UnsecureProtocolPrefix)) {
 				// Is there a different URI to redirect to?
-				if (settings.EncryptedUri == null || settings.EncryptedUri.Length == 0)
+				if (string.IsNullOrEmpty(settings.EncryptedUri))
 					// Replace the protocol of the requested URL with "https".
 					// * Account for cookieless sessions by applying the application modifier.
 					Result = string.Concat(
@@ -61,7 +66,11 @@ namespace SecureSwitch {
 		/// A flag indicating whether or not to ingore the current protocol when determining.
 		/// </param>
 		/// <returns>A string containing the absolute URL of the unsecure page to redirect to.</returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static string DetermineUnsecurePage(Settings settings, bool ignoreCurrentProtocol) {
+			if (settings == null)
+				throw new ArgumentNullException("settings");
+			
 			string Result = null;
 			HttpRequest Request = HttpContext.Current.Request;
 
@@ -69,7 +78,7 @@ namespace SecureSwitch {
 			string RequestPath = Request.Url.AbsoluteUri;
 			if (ignoreCurrentProtocol || RequestPath.StartsWith(SecureProtocolPrefix)) {
 				// Is there a different URI to redirect to?
-				if (settings.UnencryptedUri == null || settings.UnencryptedUri.Length == 0)
+				if (string.IsNullOrEmpty(settings.UnencryptedUri))
 					// Replace the protocol of the requested URL with "http".
 					// * Account for cookieless sessions by applying the application modifier.
 					Result = string.Concat(
@@ -93,7 +102,8 @@ namespace SecureSwitch {
 		public static void RequestSecurePage(Settings settings) {
 			// Determine the response path, if any.
 			string ResponsePath = DetermineSecurePage(settings, false);
-			if (ResponsePath != null && ResponsePath != string.Empty)
+			DebugHelper.Output(!string.IsNullOrEmpty(ResponsePath) ? "Requesting secured page (HTTPS)." : "Request is already secure.");
+			if (!string.IsNullOrEmpty(ResponsePath))
 				// Redirect to the secure page.
 				HttpContext.Current.Response.Redirect(ResponsePath, true);
 		}
@@ -102,10 +112,15 @@ namespace SecureSwitch {
 		/// Requests the current page over an unsecure connection, if it is not already.
 		/// </summary>
 		/// <param name="settings">The Settings to use for this request.</param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static void RequestUnsecurePage(Settings settings) {
+			if (settings == null)
+				throw new ArgumentNullException("settings");
+			
 			// Determine the response path, if any.
 			string ResponsePath = DetermineUnsecurePage(settings, false);
-			if (ResponsePath != null && ResponsePath != string.Empty) {
+			DebugHelper.Output(!string.IsNullOrEmpty(ResponsePath) ? "Requesting unsecured page (HTTP)." : "Request is already unsecured.");
+			if (!string.IsNullOrEmpty(ResponsePath)) {
 				HttpRequest Request = HttpContext.Current.Request;
 
 				// Test for the need to bypass a security warning.
@@ -156,7 +171,7 @@ namespace SecureSwitch {
 
 					Response.End();
 				} else
-					// Redirect to the insecure page.
+					// Redirect to the unsecure page.
 					Response.Redirect(ResponsePath, true);
 			}
 		}
@@ -172,8 +187,8 @@ namespace SecureSwitch {
 		/// <returns></returns>
 		private static string BuildUrl(bool secure, bool maintainPath, string encryptedUri, string unencryptedUri) {
 			// Clean the URIs.
-			encryptedUri = CleanHostUri(encryptedUri == null || encryptedUri == string.Empty ? unencryptedUri : encryptedUri);
-			unencryptedUri = CleanHostUri(unencryptedUri == null || unencryptedUri == string.Empty ? encryptedUri : unencryptedUri);
+			encryptedUri = CleanHostUri(string.IsNullOrEmpty(encryptedUri) ? unencryptedUri : encryptedUri);
+			unencryptedUri = CleanHostUri(string.IsNullOrEmpty(unencryptedUri) ? encryptedUri : unencryptedUri);
 
 			// Get the current request.
 			HttpRequest Request = HttpContext.Current.Request;
@@ -215,7 +230,7 @@ namespace SecureSwitch {
 		/// <returns>Returns a string that is stripped as needed.</returns>
 		private static string CleanHostUri(string uri) {
 			string Result = string.Empty;
-			if (uri != null && uri != string.Empty) {
+			if (!string.IsNullOrEmpty(uri)) {
 				// Ensure there is a protocol or a Uri cannot be constructed.
 				if (!uri.StartsWith(UnsecureProtocolPrefix) && !uri.StartsWith(SecureProtocolPrefix))
 					uri = UnsecureProtocolPrefix + uri;

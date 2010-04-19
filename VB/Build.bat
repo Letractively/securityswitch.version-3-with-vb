@@ -1,1 +1,0 @@
-C:\Windows\Microsoft.NET\Framework\v1.1.4322\vbc.exe /target:library /out:bin\SecureSwitch.dll /recurse:*.vb /optioncompare:binary /optionexplicit+ /optionstrict- /r:System.dll,System.Data.dll,System.Xml.dll,System.Web.dll /imports:Microsoft.VisualBasic,System,System.Collections,System.Data,System.Diagnostics

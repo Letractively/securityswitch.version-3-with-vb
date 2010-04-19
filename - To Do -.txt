@@ -1,0 +1,2 @@
+- Change the IgnoreHandlers property to FileTypesToIgnore and allow a comma-delimited list of file types to ignore.
+- Allow for wildcards or regular expressions with the file and directory Paths.

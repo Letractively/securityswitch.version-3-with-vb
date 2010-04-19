@@ -1,14 +1,17 @@
+Imports System
+Imports System.Globalization
 Imports System.Web
 Imports SecureSwitch.Configuration
 
 Namespace SecureSwitch
 
 	''' <summary>
-	''' The SSLHelper class provides Shared methods for ensuring that a page is rendered 
+	''' Provides shared methods for ensuring that a page is rendered 
 	''' securely via SSL or unsecurely.
 	''' </summary>
 	Public NotInheritable Class SslHelper
 
+		' Protocol prefixes.
 		Private Const UnsecureProtocolPrefix As String = "http://"
 		Private Const SecureProtocolPrefix As String = "https://"
 
@@ -26,7 +29,12 @@ Namespace SecureSwitch
 		''' A flag indicating whether or not to ingore the current protocol when determining.
 		''' </param>
 		''' <returns>A string containing the absolute URL of the secure page to redirect to.</returns>
+		''' <exception cref="ArgumentNullException"></exception>
 		Public Shared Function DetermineSecurePage(ByVal settings As Settings, ByVal ignoreCurrentProtocol As Boolean) As String
+			If settings Is Nothing Then
+				Throw New ArgumentNullException("settings")
+			End If
+
 			Dim Result As String = Nothing
 			Dim Request As HttpRequest = HttpContext.Current.Request
 
@@ -34,7 +42,7 @@ Namespace SecureSwitch
 			Dim RequestPath As String = Request.Url.AbsoluteUri
 			If ignoreCurrentProtocol OrElse RequestPath.StartsWith(UnsecureProtocolPrefix) Then
 				' Is there a different URI to redirect to?
-				If settings.EncryptedUri Is Nothing OrElse settings.EncryptedUri.Length = 0 Then
+				If String.IsNullOrEmpty(settings.EncryptedUri) Then
 					' Replace the protocol of the requested URL with "https".
 					' * Account for cookieless sessions by applying the application modifier.
 					Result = String.Concat( _
@@ -60,7 +68,12 @@ Namespace SecureSwitch
 		''' A flag indicating whether or not to ingore the current protocol when determining.
 		''' </param>
 		''' <returns>A string containing the absolute URL of the unsecure page to redirect to.</returns>
+		''' <exception cref="ArgumentNullException"></exception>
 		Public Shared Function DetermineUnsecurePage(ByVal settings As Settings, ByVal ignoreCurrentProtocol As Boolean) As String
+			If settings Is Nothing Then
+				Throw New ArgumentNullException("settings")
+			End If
+
 			Dim Result As String = Nothing
 			Dim Request As HttpRequest = HttpContext.Current.Request
 
@@ -68,7 +81,7 @@ Namespace SecureSwitch
 			Dim RequestPath As String = HttpContext.Current.Request.Url.AbsoluteUri
 			If ignoreCurrentProtocol OrElse RequestPath.StartsWith(SecureProtocolPrefix) Then
 				' Is there a different URI to redirect to?
-				If settings.UnencryptedUri Is Nothing OrElse settings.UnencryptedUri.Length = 0 Then
+				If String.IsNullOrEmpty(settings.UnencryptedUri) Then
 					' Replace the protocol of the requested URL with "http".
 					' * Account for cookieless sessions by applying the application modifier.
 					Result = String.Concat( _
@@ -93,7 +106,8 @@ Namespace SecureSwitch
 		Public Shared Sub RequestSecurePage(ByVal settings As Settings)
 			' Determine the response path, if any.
 			Dim ResponsePath As String = DetermineSecurePage(settings, False)
-			If Not ResponsePath Is Nothing AndAlso ResponsePath <> String.Empty Then
+			DebugHelper.Output(If(Not String.IsNullOrEmpty(ResponsePath), "Requesting secured page (HTTPS).", "Request is already secure."))
+			If Not String.IsNullOrEmpty(ResponsePath) Then
 				' Redirect to the secure page.
 				HttpContext.Current.Response.Redirect(ResponsePath, True)
 			End If
@@ -103,10 +117,16 @@ Namespace SecureSwitch
 		''' Requests the current page over an unsecure connection, if it is not already.
 		''' </summary>
 		''' <param name="settings">The Settings to use for this request.</param>
+		''' <exception cref="ArgumentNullException"></exception>
 		Public Shared Sub RequestUnsecurePage(ByVal settings As Settings)
+			If settings Is Nothing Then
+				Throw New ArgumentNullException("settings")
+			End If
+
 			' Determine the response path, if any.
 			Dim ResponsePath As String = DetermineUnsecurePage(settings, False)
-			If Not ResponsePath Is Nothing AndAlso ResponsePath <> String.Empty Then
+			DebugHelper.Output(If(Not String.IsNullOrEmpty(ResponsePath), "Requesting unsecured page (HTTP).", "Request is already unsecured."))
+			If Not String.IsNullOrEmpty(ResponsePath) Then
 				Dim Request As HttpRequest = HttpContext.Current.Request
 
 				' Test for the need to bypass a security warning.
@@ -162,7 +182,7 @@ Namespace SecureSwitch
 
 					Response.End()
 				Else
-					' Redirect to the insecure page.
+					' Redirect to the unsecure page.
 					Response.Redirect(ResponsePath, True)
 				End If
 			End If
@@ -179,8 +199,8 @@ Namespace SecureSwitch
 		''' <returns></returns>
 		Private Shared Function BuildUrl(ByVal secure As Boolean, ByVal maintainPath As Boolean, ByVal encryptedUri As String, ByVal unencryptedUri As String) As String
 			' Clean the URIs.
-			encryptedUri = CleanHostUri(CStr(IIf(encryptedUri Is Nothing OrElse encryptedUri = String.Empty, unencryptedUri, encryptedUri)))
-			unencryptedUri = CleanHostUri(CStr(IIf(unencryptedUri Is Nothing OrElse unencryptedUri = String.Empty, encryptedUri, unencryptedUri)))
+			encryptedUri = CleanHostUri(CStr(IIf(String.IsNullOrEmpty(encryptedUri), unencryptedUri, encryptedUri)))
+			unencryptedUri = CleanHostUri(CStr(IIf(String.IsNullOrEmpty(unencryptedUri), encryptedUri, unencryptedUri)))
 
 			' Get the current request.
 			Dim Request As HttpRequest = HttpContext.Current.Request
@@ -224,7 +244,7 @@ Namespace SecureSwitch
 		''' <returns>Returns a string that is stripped as needed.</returns>
 		Private Shared Function CleanHostUri(ByVal uri As String) As String
 			Dim Result As String = String.Empty
-			If Not uri Is Nothing AndAlso uri <> String.Empty Then
+			If Not String.IsNullOrEmpty(uri) Then
 				' Ensure there is a protocol or a Uri cannot be constructed.
 				If Not uri.StartsWith(UnsecureProtocolPrefix) AndAlso Not uri.StartsWith(SecureProtocolPrefix) Then
 					uri = UnsecureProtocolPrefix + uri

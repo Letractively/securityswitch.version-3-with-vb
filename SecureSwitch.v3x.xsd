@@ -1,22 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="SecureSwitch.v2x" targetNamespace="http://SecureSwitch.v2x.xsd" elementFormDefault="qualified" xmlns="http://SecureSwitch.v2x.xsd" xmlns:mstns="http://SecureSwitch.v2x.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema id="SecureSwitch.v3x" targetNamespace="http://SecureSwitch.v3x.xsd" elementFormDefault="qualified" xmlns="http://SecureSwitch.v3x.xsd" xmlns:mstns="http://SecureSwitch.v3x.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<xs:element name="secureSwitch">
 		<xs:complexType>
-			<xs:sequence minOccurs="0">
-				<xs:element name="file" minOccurs="0" maxOccurs="unbounded">
+			<xs:all minOccurs="0">
+				<xs:element name="files" minOccurs="0">
 					<xs:complexType>
-						<xs:attribute name="path" type="xs:string" use="required" />
-						<xs:attribute name="secure" type="SecurityType" />
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="add">
+								<xs:complexType>
+									<xs:attribute name="path" type="xs:string" use="required" />
+									<xs:attribute name="secure" type="SecurityType" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="directory" minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="directories" minOccurs="0">
 					<xs:complexType>
-						<xs:attribute name="path" type="xs:string" use="required" />
-						<xs:attribute name="secure" type="SecurityType" />
-						<xs:attribute name="recurse" type="DotNetBoolean" />
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="add">
+								<xs:complexType>
+									<xs:attribute name="path" type="xs:string" use="required" />
+									<xs:attribute name="secure" type="SecurityType" />
+									<xs:attribute name="recurse" type="DotNetBoolean" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-			</xs:sequence>
+			</xs:all>
 			
 			<xs:attribute name="mode" type="Mode" />
 			<xs:attribute name="encryptedUri" type="xs:string" />

@@ -1,7 +1,38 @@
 using System;
-using System.Collections.Specialized;
+using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace SecureSwitch.Configuration {
+
+	/// <summary>
+	/// The possible ways to ignore HTTP handlers.
+	/// </summary>
+	public enum IgnoreHandlers {
+		/// <summary>
+		/// Indicates that the module should ignore the built-in HTTP handlers.
+		/// <list type="bullet">
+		///		<item>Trace.axd</item>
+		///		<item>WebResource.axd</item>
+		/// </list>
+		/// </summary>
+		BuiltIn,
+
+		/// <summary>
+		/// Indicates that the module should ignore all files with extensions corresponding
+		/// to the standard for HTTP handlers. Currently, that is .axd files.
+		/// </summary>
+		WithStandardExtensions,
+
+		/// <summary>
+		/// Indicates that the module will not ignore handlers unless specifically 
+		/// specified in the files or directories entries.
+		/// </summary>
+		/// <remarks>
+		/// This was the default behavior prior to version 3.1.
+		/// </remarks>
+		None
+
+	}
 
 	/// <summary>
 	/// The different modes supported for the &lt;secureSwitch&gt; configuration section.
@@ -50,19 +81,16 @@ namespace SecureSwitch.Configuration {
 
 
 	/// <summary>
-	/// Settings contains the settings of a SecureSwitch configuration section.
+	/// Contains the settings of a &lt;secureSwitch&gt; configuration section.
 	/// </summary>
-	public class Settings {
+	public class Settings : ConfigurationSection {
 
-		// Fields
-		private string bypassQueryParamName = "BypassSecurityWarning";
-		private string encryptedUri = string.Empty;
-		private bool maintainPath = true;
-		private Mode mode = Mode.On;
-		private DirectorySettingCollection directories;
-		private FileSettingCollection files;
-		private string unencryptedUri = string.Empty;
-		private SecurityWarningBypassMode warningBypassMode = SecurityWarningBypassMode.BypassWithQueryParam;
+		/// <summary>
+		/// Creates an instance of Settings.
+		/// </summary>
+		public Settings()
+			: base() {
+		}
 
 		#region Properties
 
@@ -70,65 +98,81 @@ namespace SecureSwitch.Configuration {
 		/// Gets or sets the name of the query parameter that will indicate to the module to bypass
 		/// any security warning if WarningBypassMode = BypassWithQueryParam.
 		/// </summary>
+		[ConfigurationProperty("bypassQueryParamName")]
 		public string BypassQueryParamName {
-			get { return bypassQueryParamName; }
-			set { bypassQueryParamName = value; }
+			get { return (string)this["bypassQueryParamName"]; }
+			set { this["bypassQueryParamName"] = value; }
 		}
 
 		/// <summary>
 		/// Gets or sets the path to a URI for encrypted redirections, if any.
 		/// </summary>
+		[ConfigurationProperty("encryptedUri"), RegexStringValidator(@"^(?:|(?:https://)?[\w\-][\w\.\-,]*(?:\:\d+)?(?:/[\w\.\-]+)*/?)$")]
 		public string EncryptedUri {
-			get { return encryptedUri; }
+			get { return (string)this["encryptedUri"]; }
 			set {
-				if (value != null && value.Length > 0)
-					encryptedUri = value;
+				if (!string.IsNullOrEmpty(value))
+					this["encryptedUri"] = value;
 				else
-					encryptedUri = string.Empty;
+					this["encryptedUri"] = null;
 			}
+		}
+
+		/// <summary>
+		/// Gets or sets a flag indicating how to ignore HTTP handlers, if at all.
+		/// </summary>
+		[ConfigurationProperty("ignoreHandlers", DefaultValue = IgnoreHandlers.BuiltIn)]
+		public IgnoreHandlers IgnoreHandlers {
+			get { return (IgnoreHandlers)this["ignoreHandlers"]; }
+			set { this["ignoreHandlers"] = value; }
 		}
 
 		/// <summary>
 		/// Gets or sets a flag indicating whether or not to maintain the current path when redirecting
 		/// to a different host.
 		/// </summary>
+		[ConfigurationProperty("maintainPath", DefaultValue = true)]
 		public bool MaintainPath {
-			get { return maintainPath; }
-			set { maintainPath = value; }
+			get { return (bool)this["maintainPath"]; }
+			set { this["maintainPath"] = value; }
 		}
 
 		/// <summary>
-		/// Gets or sets the mode indicating how the secure web page settings handled.
+		/// Gets or sets the mode indicating how the secure switch settings are handled.
 		/// </summary>
+		[ConfigurationProperty("mode", DefaultValue = Mode.On)]
 		public Mode Mode {
-			get { return mode; }
-			set { mode = value; }
+			get { return (Mode)this["mode"]; }
+			set { this["mode"] = value; }
 		}
 
 		/// <summary>
-		/// Gets the collection of directories read from the configuration section.
+		/// Gets the collection of directory settings read from the configuration section.
 		/// </summary>
+		[ConfigurationProperty("directories")]
 		public DirectorySettingCollection Directories {
-			get { return directories; }
+			get { return (DirectorySettingCollection)this["directories"]; }
 		}
 
 		/// <summary>
-		/// Gets the collection of files read from the configuration section.
+		/// Gets the collection of file settings read from the configuration section.
 		/// </summary>
+		[ConfigurationProperty("files")]
 		public FileSettingCollection Files {
-			get { return files; }
+			get { return (FileSettingCollection)this["files"]; }
 		}
 
 		/// <summary>
 		/// Gets or sets the path to a URI for unencrypted redirections, if any.
 		/// </summary>
+		[ConfigurationProperty("unencryptedUri"), RegexStringValidator(@"^(?:|(?:http://)?[\w\-][\w\.\-,]*(?:\:\d+)?(?:/[\w\.\-]+)*/?)$")]
 		public string UnencryptedUri {
-			get { return unencryptedUri; }
+			get { return (string)this["unencryptedUri"]; }
 			set {
-				if (value != null && value.Length > 0)
-					unencryptedUri = value;
+				if (!string.IsNullOrEmpty(value))
+					this["unencryptedUri"] = value;
 				else
-					unencryptedUri = string.Empty;
+					this["unencryptedUri"] = null;
 			}
 		}
 
@@ -136,21 +180,22 @@ namespace SecureSwitch.Configuration {
 		/// Gets or sets the bypass mode indicating whether or not to bypass security warnings
 		/// when switching to a unencrypted page.
 		/// </summary>
+		[ConfigurationProperty("warningBypassMode", DefaultValue = SecurityWarningBypassMode.BypassWithQueryParam)]
 		public SecurityWarningBypassMode WarningBypassMode {
-			get { return warningBypassMode; }
-			set { warningBypassMode = value; }
+			get { return (SecurityWarningBypassMode)this["warningBypassMode"]; }
+			set { this["warningBypassMode"] = value; }
+		}
+
+		/// <summary>
+		/// This property is for internal use and is not meant to be set.
+		/// </summary>
+		[ConfigurationProperty("xmlns")]
+		public string XmlNamespace {
+			get { return (string)this["xmlns"]; }
+			set { this["xmlns"] = value; }
 		}
 
 		#endregion
-
-		/// <summary>
-		/// The default constructor creates the needed lists.
-		/// </summary>
-		public Settings() {
-			// Create the collections
-			directories = new DirectorySettingCollection();
-			files = new FileSettingCollection();
-		}
 
 	}
 

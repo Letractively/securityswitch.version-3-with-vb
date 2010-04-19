@@ -1,4 +1,4 @@
-Imports System
+﻿Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
@@ -8,16 +8,19 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Web Page Security")> 
-<Assembly: AssemblyDescription("Automatic web page security via protocol switching as needed.")> 
+<Assembly: AssemblyTitle("SecureSwitch")> 
+<Assembly: AssemblyDescription("An ASP.NET module for automatically switching between HTTP and HTTPS protocols without hard-coding absolute URLs.")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("")> 
-<Assembly: AssemblyCopyright("")> 
+<Assembly: AssemblyProduct("SecureSwitch")> 
+<Assembly: AssemblyCopyright("Copyright © 2004 Matt Sollars")> 
 <Assembly: AssemblyTrademark("")> 
+
 <Assembly: CLSCompliant(True)> 
 
+<Assembly: ComVisible(False)>
+
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("1C41B64B-A43E-4796-B625-925677935DE5")> 
+<Assembly: Guid("5c8351e8-1348-4620-97d3-b8da16f8aabc")> 
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -28,9 +31,7 @@ Imports System.Runtime.InteropServices
 '
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
+' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("2.6.3.0")> 
-
-<Assembly: AssemblyDelaySign(False)> 
-'<Assembly: AssemblyKeyFile("..\..\..\Key.snk")> 
-<Assembly: AssemblyKeyName("")> 
+<Assembly: AssemblyVersion("3.1.3")> 
+<Assembly: AssemblyFileVersion("3.1.3")> 

@@ -1,4 +1,4 @@
-*** Version 2.x (For .NET 1.1) ***
+*** Version 3.x (For .NET 2.x) ***
 
 Congratulations!
 
@@ -12,8 +12,7 @@ Please, add the following lines to the configuration file of your choice:
 		...
 		<section 
 			name="secureSwitch" 
-			type="SecureSwitch.SecureSwitchSectionHandler, SecureSwitch" allowDefinition="MachineToApplication" 
-			allowLocation="false" />
+			type="SecureSwitch.Configuration.Settings, SecureSwitch" />
 	</configSections>
 	
 	...
@@ -23,7 +22,7 @@ Please, add the following lines to the configuration file of your choice:
 		<httpModules>
 			...
 			<add 
-				name="SecureSwitch" 
+				name="SecureWebPage" 
 				type="SecureSwitch.SecureSwitchModule, SecureSwitch" />
 		</httpModules>
 		...
@@ -38,7 +37,7 @@ To enable the security module in a web application, add the following section to
 <configuration>
 	...
 	<!--
-	secureSwitch
+	SecureSwitch
 		This section will redirect any matching pages to the HTTPS protocol for SSL security
 		and, if needed, redirect any non-matching pages (or pages matching an entry marked secure="false") 
 		to the HTTP protocol to remove the security and encryption.
@@ -77,24 +76,28 @@ To enable the security module in a web application, add the following section to
 			be ignored. Currently, that is .axd files.
 		"None": No HTTP handlers should be ignored unless specifically specified in the files or directories entries.
 		
-		- Add <directory> tags for each directory to secure.
-		- Add <file> tags for each file to secure.
+		- Add directories via <add> tags inside a <directories> tag for each directory to secure.
+		- Add files via <add> tags inside a <files> tag for each file to secure.
 		- Both tags expect a "path" attribute to the directory or file that should be evaluated.
 			Specify "/" as the directory path in order to denote the application root (not the site root).
 		- Both tags may include a "secure" attribute indicating whether or not to secure the 
 			directory or file (default = "True"). Possible values are "True" to force security, 
 			"False" to force insecurity and "Ignore" to ignore the file or directory and do nothing.
-		- <directory> tags may include a "recurse" attribute. If "True", all files in any sub-directories
+		- Directory <add> tags may include a "recurse" attribute. If "True", all files in any sub-directories
 			are included (default = "False").
 	-->
 	<secureSwitch mode="On">
-		<file path="Default.aspx" secure="False" />
-		<file path="Lib/PopupCalendar.aspx" secure="Ignore" />
-		<file path="Members/ViewStatistics.aspx" />
-		<file path="Admin/MoreAdminStuff.aspx" secure="False" />
-		<directory path="/" />
-		<directory path="Admin" />
-		<directory path="Members/Secure" recurse="True" />
+		<files>
+			<add path="Default.aspx" secure="False" />
+			<add path="Lib/PopupCalendar.aspx" secure="Ignore" />
+			<add path="Members/ViewStatistics.aspx" />
+			<add path="Admin/MoreAdminStuff.aspx" secure="False" />
+		</files>
+		<directories>
+			<add path="/" />
+			<add path="Admin" />
+			<add path="Members/Secure" recurse="True" />
+		</directories>
 	</secureSwitch>
 
 	...
