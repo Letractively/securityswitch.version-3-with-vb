@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="SecureSwitch.v2x" targetNamespace="http://SecureSwitch.v2x.xsd" elementFormDefault="qualified" xmlns="http://SecureSwitch.v2x.xsd" xmlns:mstns="http://SecureSwitch.v2x.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="secureSwitch">
+		<xs:complexType>
+			<xs:sequence minOccurs="0">
+				<xs:element name="file" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="path" type="xs:string" use="required" />
+						<xs:attribute name="secure" type="SecurityType" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="directory" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="path" type="xs:string" use="required" />
+						<xs:attribute name="secure" type="SecurityType" />
+						<xs:attribute name="recurse" type="DotNetBoolean" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			
+			<xs:attribute name="mode" type="Mode" />
+			<xs:attribute name="encryptedUri" type="xs:string" />
+			<xs:attribute name="unencryptedUri" type="xs:string" />
+			<xs:attribute name="maintainPath" type="DotNetBoolean" />
+			<xs:attribute name="warningBypassMode" type="SecurityWarningBypassMode" />
+			<xs:attribute name="bypassQueryParamName" type="xs:string" />
+			<xs:attribute name="ignoreHandlers" type="IgnoreHandlers" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="DotNetBoolean">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="false" />
+			<xs:enumeration value="true" />
+			<xs:enumeration value="False" />
+			<xs:enumeration value="True" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Mode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="On" />
+			<xs:enumeration value="RemoteOnly" />
+			<xs:enumeration value="LocalOnly" />
+			<xs:enumeration value="Off" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IgnoreHandlers">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BuiltIn" />
+			<xs:enumeration value="WithStandardExtensions" />
+			<xs:enumeration value="None" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SecurityWarningBypassMode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AlwaysBypass" />
+			<xs:enumeration value="BypassWithQueryParam" />
+			<xs:enumeration value="NeverBypass" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SecurityType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Secure" />
+			<xs:enumeration value="Insecure" />
+			<xs:enumeration value="Ignore" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

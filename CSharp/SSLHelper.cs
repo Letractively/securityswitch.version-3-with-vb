@@ -1,0 +1,235 @@
+using System;
+using System.Web;
+using SecureSwitch.Configuration;
+
+namespace SecureSwitch {
+
+	/// <summary>
+	/// Provides static methods for ensuring that a page is rendered 
+	/// securely via SSL or unsecurely.
+	/// </summary>
+	public sealed class SslHelper {
+
+		// Protocol prefixes.
+		private const string UnsecureProtocolPrefix = "http://";
+		private const string SecureProtocolPrefix = "https://";
+
+		/// <summary>
+		/// Prevent creating an instance of this class.
+		/// </summary>
+		private SslHelper() {
+		}
+
+		/// <summary>
+		/// Determines the secure page that should be requested if a redirect occurs.
+		/// </summary>
+		/// <param name="settings">The Settings to use in determining.</param>
+		/// <param name="ignoreCurrentProtocol">
+		/// A flag indicating whether or not to ingore the current protocol when determining.
+		/// </param>
+		/// <returns>A string containing the absolute URL of the secure page to redirect to.</returns>
+		public static string DetermineSecurePage(Settings settings, bool ignoreCurrentProtocol) {
+			string Result = null;
+			HttpRequest Request = HttpContext.Current.Request;
+
+			// Is this request already secure?
+			string RequestPath = Request.Url.AbsoluteUri;
+			if (ignoreCurrentProtocol || RequestPath.StartsWith(UnsecureProtocolPrefix)) {
+				// Is there a different URI to redirect to?
+				if (settings.EncryptedUri == null || settings.EncryptedUri.Length == 0)
+					// Replace the protocol of the requested URL with "https".
+					// * Account for cookieless sessions by applying the application modifier.
+					Result = string.Concat(
+						SecureProtocolPrefix,
+						Request.Url.Authority,
+						HttpContext.Current.Response.ApplyAppPathModifier(Request.Path),
+						Request.Url.Query
+					);
+				else
+					// Build the URL with the "https" protocol.
+					Result = BuildUrl(true, settings.MaintainPath, settings.EncryptedUri, settings.UnencryptedUri);
+			}
+
+			return Result;
+		}
+
+		/// <summary>
+		/// Determines the unsecure page that should be requested if a redirect occurs.
+		/// </summary>
+		/// <param name="settings">The Settings to use in determining.</param>
+		/// <param name="ignoreCurrentProtocol">
+		/// A flag indicating whether or not to ingore the current protocol when determining.
+		/// </param>
+		/// <returns>A string containing the absolute URL of the unsecure page to redirect to.</returns>
+		public static string DetermineUnsecurePage(Settings settings, bool ignoreCurrentProtocol) {
+			string Result = null;
+			HttpRequest Request = HttpContext.Current.Request;
+
+			// Is this request secure?
+			string RequestPath = Request.Url.AbsoluteUri;
+			if (ignoreCurrentProtocol || RequestPath.StartsWith(SecureProtocolPrefix)) {
+				// Is there a different URI to redirect to?
+				if (settings.UnencryptedUri == null || settings.UnencryptedUri.Length == 0)
+					// Replace the protocol of the requested URL with "http".
+					// * Account for cookieless sessions by applying the application modifier.
+					Result = string.Concat(
+						UnsecureProtocolPrefix,
+						Request.Url.Authority,
+						HttpContext.Current.Response.ApplyAppPathModifier(Request.Path),
+						Request.Url.Query
+					);
+				else
+					// Build the URL with the "http" protocol.
+					Result = BuildUrl(false, settings.MaintainPath, settings.EncryptedUri, settings.UnencryptedUri);
+			}
+
+			return Result;
+		}
+
+		/// <summary>
+		/// Requests the current page over a secure connection, if it is not already.
+		/// </summary>
+		/// <param name="settings">The Settings to use for this request.</param>
+		public static void RequestSecurePage(Settings settings) {
+			// Determine the response path, if any.
+			string ResponsePath = DetermineSecurePage(settings, false);
+			if (ResponsePath != null && ResponsePath != string.Empty)
+				// Redirect to the secure page.
+				HttpContext.Current.Response.Redirect(ResponsePath, true);
+		}
+
+		/// <summary>
+		/// Requests the current page over an unsecure connection, if it is not already.
+		/// </summary>
+		/// <param name="settings">The Settings to use for this request.</param>
+		public static void RequestUnsecurePage(Settings settings) {
+			// Determine the response path, if any.
+			string ResponsePath = DetermineUnsecurePage(settings, false);
+			if (ResponsePath != null && ResponsePath != string.Empty) {
+				HttpRequest Request = HttpContext.Current.Request;
+
+				// Test for the need to bypass a security warning.
+				bool Bypass;
+				if (settings.WarningBypassMode == SecurityWarningBypassMode.AlwaysBypass)
+					Bypass = true;
+				else if (settings.WarningBypassMode == SecurityWarningBypassMode.BypassWithQueryParam &&
+						Request.QueryString[settings.BypassQueryParamName] != null) {
+					Bypass = true;
+
+					// Remove the bypass query parameter from the URL.
+					System.Text.StringBuilder NewPath = new System.Text.StringBuilder(ResponsePath);
+					int i = ResponsePath.LastIndexOf(string.Format("?{0}=", settings.BypassQueryParamName));
+					if (i < 0)
+						i = ResponsePath.LastIndexOf(string.Format("&{0}=", settings.BypassQueryParamName));
+					NewPath.Remove(i, settings.BypassQueryParamName.Length + Request.QueryString[settings.BypassQueryParamName].Length + 1);
+
+					// Remove any abandoned "&" character.
+					if (i >= NewPath.Length)
+						i = NewPath.Length - 1;
+					if (NewPath[i] == '&')
+						NewPath.Remove(i, 1);
+
+					// Remove any abandoned "?" character.
+					i = NewPath.Length - 1;
+					if (NewPath[i] == '?')
+						NewPath.Remove(i, 1);
+
+					ResponsePath = NewPath.ToString();
+				} else
+					Bypass = false;
+
+				// Output a redirector for the needed page to avoid a security warning.
+				HttpResponse Response = HttpContext.Current.Response;
+				if (Bypass) {
+					// Clear the current response.
+					Response.Clear();
+
+					// Add a refresh header to the response for the new path.
+					Response.AddHeader("Refresh", string.Concat("0;URL=", ResponsePath));
+
+					// Also, add JavaScript to replace the current location as backup.
+					Response.Write("<html><head><title></title>");
+					Response.Write("<!-- <script language=\"javascript\">window.location.replace(\"");
+					Response.Write(ResponsePath);
+					Response.Write("\");</script> -->");
+					Response.Write("</head><body></body></html>");
+
+					Response.End();
+				} else
+					// Redirect to the insecure page.
+					Response.Redirect(ResponsePath, true);
+			}
+		}
+
+		/// <summary>
+		/// Builds a URL from the given protocol and appropriate host path. The resulting URL 
+		/// will maintain the current path if requested.
+		/// </summary>
+		/// <param name="secure">Is this to be a secure URL?</param>
+		/// <param name="maintainPath">Should the current path be maintained during transfer?</param>
+		/// <param name="encryptedUri">The URI to redirect to for encrypted requests.</param>
+		/// <param name="unencryptedUri">The URI to redirect to for standard requests.</param>
+		/// <returns></returns>
+		private static string BuildUrl(bool secure, bool maintainPath, string encryptedUri, string unencryptedUri) {
+			// Clean the URIs.
+			encryptedUri = CleanHostUri(encryptedUri == null || encryptedUri == string.Empty ? unencryptedUri : encryptedUri);
+			unencryptedUri = CleanHostUri(unencryptedUri == null || unencryptedUri == string.Empty ? encryptedUri : unencryptedUri);
+
+			// Get the current request.
+			HttpRequest Request = HttpContext.Current.Request;
+
+			// Prepare to build the needed URL.
+			System.Text.StringBuilder Url = new System.Text.StringBuilder();
+
+			// Host authority (e.g. secure.mysite.com/).
+			if (secure)
+				Url.Append(encryptedUri);
+			else
+				Url.Append(unencryptedUri);
+
+			if (maintainPath)
+				// Append the current file path.
+				Url.Append(Request.CurrentExecutionFilePath).Append(Request.Url.Query);
+			else {
+				// Append just the current page
+				string CurrentUrl = Request.Url.AbsolutePath;
+				Url.Append(CurrentUrl.Substring(CurrentUrl.LastIndexOf('/') + 1)).Append(Request.Url.Query);
+			}
+
+			// Replace any double slashes with a single slash.
+			Url.Replace("//", "/");
+
+			// Prepend the protocol.
+			if (secure)
+				Url.Insert(0, SecureProtocolPrefix);
+			else
+				Url.Insert(0, UnsecureProtocolPrefix);
+
+			return Url.ToString();
+		}
+
+		/// <summary>
+		/// Cleans a host path by stripping out any unneeded elements.
+		/// </summary>
+		/// <param name="uri">The host URI to validate.</param>
+		/// <returns>Returns a string that is stripped as needed.</returns>
+		private static string CleanHostUri(string uri) {
+			string Result = string.Empty;
+			if (uri != null && uri != string.Empty) {
+				// Ensure there is a protocol or a Uri cannot be constructed.
+				if (!uri.StartsWith(UnsecureProtocolPrefix) && !uri.StartsWith(SecureProtocolPrefix))
+					uri = UnsecureProtocolPrefix + uri;
+
+				// Extract the authority and path to build a string suitable for our needs.
+				Uri HostUri = new Uri(uri);
+				Result = string.Concat(HostUri.Authority, HostUri.AbsolutePath);
+				if (!Result.EndsWith("/"))
+					Result += "/";
+			}
+
+			return Result;
+		}
+
+	}
+
+}

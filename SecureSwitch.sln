@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPageSecurity-CSharp", "CSharp\WebPageSecurity-CSharp.csproj", "{52A36CCC-4DFE-4283-82CA-9D1F26D1E77E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WebPageSecurity-VB", "VB\WebPageSecurity-VB.vbproj", "{13F846C9-5459-42FD-94C3-6B7B35DB12C1}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{52A36CCC-4DFE-4283-82CA-9D1F26D1E77E}.Debug.ActiveCfg = Debug|.NET
+		{52A36CCC-4DFE-4283-82CA-9D1F26D1E77E}.Debug.Build.0 = Debug|.NET
+		{52A36CCC-4DFE-4283-82CA-9D1F26D1E77E}.Release.ActiveCfg = Release|.NET
+		{52A36CCC-4DFE-4283-82CA-9D1F26D1E77E}.Release.Build.0 = Release|.NET
+		{13F846C9-5459-42FD-94C3-6B7B35DB12C1}.Debug.ActiveCfg = Debug|.NET
+		{13F846C9-5459-42FD-94C3-6B7B35DB12C1}.Debug.Build.0 = Debug|.NET
+		{13F846C9-5459-42FD-94C3-6B7B35DB12C1}.Release.ActiveCfg = Release|.NET
+		{13F846C9-5459-42FD-94C3-6B7B35DB12C1}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
