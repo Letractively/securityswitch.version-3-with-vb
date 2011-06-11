@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
 
-namespace SecureSwitch {
+namespace SecuritySwitch {
 	
 	/// <summary>
 	/// A helper class for debugging.
@@ -9,7 +9,7 @@ namespace SecureSwitch {
 	internal static class DebugHelper {
 
 		// The category to use when tracing.
-		const string TraceCategory = "SecureSwitchModule";
+		const string TraceCategory = "SecuritySwitchModule";
 
 		// Holds a reference to the current trace context.
 		private static TraceContext _trace;

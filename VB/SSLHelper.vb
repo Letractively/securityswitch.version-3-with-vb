@@ -1,9 +1,9 @@
 Imports System
 Imports System.Globalization
 Imports System.Web
-Imports SecureSwitch.Configuration
+Imports SecuritySwitch.Configuration
 
-Namespace SecureSwitch
+Namespace SecuritySwitch
 
 	''' <summary>
 	''' Provides shared methods for ensuring that a page is rendered 

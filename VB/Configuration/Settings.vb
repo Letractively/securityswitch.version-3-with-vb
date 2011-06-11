@@ -2,7 +2,7 @@ Imports System
 Imports System.Configuration
 Imports System.Text.RegularExpressions
 
-Namespace SecureSwitch.Configuration
+Namespace SecuritySwitch.Configuration
 
 	''' <summary>
 	''' The possible ways to ignore HTTP handlers.
@@ -35,7 +35,7 @@ Namespace SecureSwitch.Configuration
 	End Enum
 
 	''' <summary>
-	''' The different modes supported for the &lt;secureSwitch&gt; configuration section.
+	''' The different modes supported for the &lt;securitySwitch&gt; configuration section.
 	''' </summary>
 	Public Enum Mode
 
@@ -86,7 +86,7 @@ Namespace SecureSwitch.Configuration
 
 
 	''' <summary>
-	''' Contains the settings of a &lt;secureSwitch&gt; configuration section.
+	''' Contains the settings of a &lt;securitySwitch&gt; configuration section.
 	''' </summary>
 	Public Class Settings
 		Inherits ConfigurationSection

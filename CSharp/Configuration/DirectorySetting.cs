@@ -2,10 +2,10 @@ using System;
 using System.Configuration;
 using System.Globalization;
 
-namespace SecureSwitch.Configuration {
+namespace SecuritySwitch.Configuration {
 
 	/// <summary>
-	/// Represents a directory entry in the &lt;secureSwitch&gt;
+	/// Represents a directory entry in the &lt;securitySwitch&gt;
 	/// configuration section.
 	/// </summary>
 	public class DirectorySetting : ItemSetting {

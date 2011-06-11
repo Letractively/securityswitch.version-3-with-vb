@@ -6,7 +6,7 @@
 Friend Class DebugHelper
 
 	' The category to use when tracing.
-	Const TraceCategory As String = "SecureSwitchModule"
+	Const TraceCategory As String = "SecuritySwitchModule"
 
 	' Holds a reference to the current trace context.
 	Private Shared _trace As TraceContext

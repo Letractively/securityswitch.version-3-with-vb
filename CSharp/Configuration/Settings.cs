@@ -2,7 +2,7 @@ using System;
 using System.Configuration;
 using System.Text.RegularExpressions;
 
-namespace SecureSwitch.Configuration {
+namespace SecuritySwitch.Configuration {
 
 	/// <summary>
 	/// The possible ways to ignore HTTP handlers.
@@ -35,7 +35,7 @@ namespace SecureSwitch.Configuration {
 	}
 
 	/// <summary>
-	/// The different modes supported for the &lt;secureSwitch&gt; configuration section.
+	/// The different modes supported for the &lt;securitySwitch&gt; configuration section.
 	/// </summary>
 	public enum Mode {
 		/// <summary>
@@ -81,7 +81,7 @@ namespace SecureSwitch.Configuration {
 
 
 	/// <summary>
-	/// Contains the settings of a &lt;secureSwitch&gt; configuration section.
+	/// Contains the settings of a &lt;securitySwitch&gt; configuration section.
 	/// </summary>
 	public class Settings : ConfigurationSection {
 

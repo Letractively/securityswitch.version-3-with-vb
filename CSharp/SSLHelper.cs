@@ -1,9 +1,9 @@
 using System;
 using System.Globalization;
 using System.Web;
-using SecureSwitch.Configuration;
+using SecuritySwitch.Configuration;
 
-namespace SecureSwitch {
+namespace SecuritySwitch {
 
 	/// <summary>
 	/// Provides static methods for ensuring that a page is rendered 

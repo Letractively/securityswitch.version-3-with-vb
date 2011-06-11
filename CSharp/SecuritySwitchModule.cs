@@ -1,20 +1,20 @@
 using System;
 using System.Web;
 using System.Web.Configuration;
-using SecureSwitch.Configuration;
+using SecuritySwitch.Configuration;
 
-namespace SecureSwitch {
+namespace SecuritySwitch {
 
 	/// <summary>
 	/// Hooks the application's BeginRequest event in order to request the current 
 	/// page securely if specified in the configuration file.
 	/// </summary>
-	public class SecureSwitchModule : IHttpModule {
+	public class SecuritySwitchModule : IHttpModule {
 
 		/// <summary>
 		/// Initializes an instance of this class.
 		/// </summary>
-		public SecureSwitchModule() {
+		public SecuritySwitchModule() {
 			DebugHelper.Output("Module created.");
 		}
 
@@ -27,7 +27,7 @@ namespace SecureSwitch {
 		}
 
 		/// <summary>
-		/// Occurs just before the SecureSwitchModule evaluates the current request.
+		/// Occurs just before the SecuritySwitchModule evaluates the current request.
 		/// </summary>
 		public event BeforeEvaluateRequestEventHandler BeforeEvaluateRequest;
 
@@ -37,9 +37,9 @@ namespace SecureSwitch {
 		/// <param name="context">The HttpApplication this module is bound to.</param>
 		public void Init(HttpApplication context) {
 			if (context != null) {
-				// Get the settings for the SecureSwitch section.
+				// Get the settings for the SecuritySwitch section.
 				DebugHelper.Output("Reading settings from configuration.");
-				Settings Settings = WebConfigurationManager.GetSection("secureSwitch") as Settings;
+				Settings Settings = WebConfigurationManager.GetSection("securitySwitch") as Settings;
 				DebugHelper.Output(Settings != null ? "Settings read successfully." : "Settings read failed!");
 
 				if (Settings != null && Settings.Mode != Mode.Off) {
@@ -135,9 +135,9 @@ namespace SecureSwitch {
 
 	/// <summary>
 	/// Represents the method that handles the event raised just before a request is evaluated by 
-	/// the SecureSwitchModule.
+	/// the SecuritySwitchModule.
 	/// </summary>
-	/// <param name="sender">The SecureSwitchModule that is the source of the event.</param>
+	/// <param name="sender">The SecuritySwitchModule that is the source of the event.</param>
 	/// <param name="e">An EvaluateRequestEventArgs that contains the event data.</param>
 	public delegate void BeforeEvaluateRequestEventHandler(object sender, EvaluateRequestEventArgs e);
 

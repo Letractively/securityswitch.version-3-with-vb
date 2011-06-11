@@ -5,7 +5,7 @@ Version 3.1.3 - October, 2007
 Version 3.1.2 - July, 2007
 --------------------------
 • Added the BeforeEvaluateRequest event to allow subscribers the ability to cancel the evaluation of the current request.
-  Create a handler in Global.asax defined as public void SecureSwitch_BeforeEvaluateRequest(object sender, EvaluateRequestEventArgs e).
+  Create a handler in Global.asax defined as public void SecuritySwitch_BeforeEvaluateRequest(object sender, EvaluateRequestEventArgs e).
 
 Version 3.1.1.1 - December, 2006
 --------------------------------
@@ -37,7 +37,7 @@ Version 2.6.3 - October, 2007
 Version 2.6.2 - July, 2007
 --------------------------
 • Added the BeforeEvaluateRequest event to allow subscribers the ability to cancel the evaluation of the current request.
-  Create a handler in Global.asax defined as public void SecureSwitch_BeforeEvaluateRequest(object sender, EvaluateRequestEventArgs e).
+  Create a handler in Global.asax defined as public void SecuritySwitch_BeforeEvaluateRequest(object sender, EvaluateRequestEventArgs e).
 
 Version 2.6.1.1 - December, 2006
 --------------------------------
@@ -54,7 +54,7 @@ Version 2.6 - October, 2006
 
 Version 2.5.1 - September, 2006
 -------------------------------
-• Bug fix: The module was adding an extra "/" when switching protocols between a specified encryptedUri and a protected directory. The SecureSwitchSectionHandler's ReadChildItem method was selectively adding a "/" character to the beginning and/or ending of the item's Path property incorrectly. The code has been changed to remove all leading and trailing "/" characters.
+• Bug fix: The module was adding an extra "/" when switching protocols between a specified encryptedUri and a protected directory. The SecuritySwitchSectionHandler's ReadChildItem method was selectively adding a "/" character to the beginning and/or ending of the item's Path property incorrectly. The code has been changed to remove all leading and trailing "/" characters.
 
 Version 2.5 - February, 2006
 ----------------------------
@@ -72,11 +72,11 @@ Version 2.0 - May, 2004
 • Source code provided in VB.NET, in addition to C#.
 • The configuration settings loader is now called once in an Application Init event handler, and if the settings indicate to not use security, a handler for the BeginRequest event is not added. This improves the overall performance of the module and any application including it. Thanks goes to Diego.
 • The root directory of the virtual application can now be secured by including a directory tag with a path of "/". Thanks to Andy for pointing this one out.
-• A mode attribute was added to the secureSwitch section. Possible values are "On", "RemoteOnly", "LocalOnly" or "Off". Thanks to Andy for this suggestion.
-• The encryptedUri and unencryptedUri attributes were added to the secureSwitch section. Set to a specific URI to indicate where the module should redirect when it decides that security is needed or not. Thanks to Andy for this suggestion.
-• The maintainApplicationPath attribute was added to the secureSwitch section. A value of "False" will prevent the module from maintaining the current path when redirecting to any specified URIs.
-• The warningBypassMode attribute was added to the secureSwitch section. Possible values are "AlwaysBypass", "NeverBypass" or "BypassWithQueryParam". This setting determines if the module will take steps to bypass security warnings in some browsers when switching from a secure request to an unsecure request.
-• The bypassQueryParamName attribute was added to the secureSwitch section. Set the value to the name of a query string parameter that indicates to the module to bypass any security warning if warningBypassMode is set to "BypassWithQueryParam".
+• A mode attribute was added to the securitySwitch section. Possible values are "On", "RemoteOnly", "LocalOnly" or "Off". Thanks to Andy for this suggestion.
+• The encryptedUri and unencryptedUri attributes were added to the securitySwitch section. Set to a specific URI to indicate where the module should redirect when it decides that security is needed or not. Thanks to Andy for this suggestion.
+• The maintainApplicationPath attribute was added to the securitySwitch section. A value of "False" will prevent the module from maintaining the current path when redirecting to any specified URIs.
+• The warningBypassMode attribute was added to the securitySwitch section. Possible values are "AlwaysBypass", "NeverBypass" or "BypassWithQueryParam". This setting determines if the module will take steps to bypass security warnings in some browsers when switching from a secure request to an unsecure request.
+• The bypassQueryParamName attribute was added to the securitySwitch section. Set the value to the name of a query string parameter that indicates to the module to bypass any security warning if warningBypassMode is set to "BypassWithQueryParam".
 • The ignore attribute was removed from the file and directory tags.
 • The secure attribute was added to the file and directory tags. Possible values are "True", "False" or "Ignore".
 • directory tags may include the new recurse attribute. If "True", all files in any sub-directories are included.

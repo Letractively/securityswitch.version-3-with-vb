@@ -2,9 +2,9 @@ using System;
 using System.Globalization;
 using System.Web;
 using System.Web.Configuration;
-using SecureSwitch.Configuration;
+using SecuritySwitch.Configuration;
 
-namespace SecureSwitch {
+namespace SecuritySwitch {
 
 	/// <summary>
 	/// Represents an evaluator for requests that 
@@ -88,8 +88,8 @@ namespace SecureSwitch {
 		/// <param name="request">The request to evaluate.</param>
 		/// <returns>A SecurityType value for the appropriate action.</returns>
 		public static SecurityType Evaluate(HttpRequest request) {
-			// Get the settings for the SecureSwitch section.
-			Settings Settings = WebConfigurationManager.GetSection("SecureSwitch") as Settings;
+			// Get the settings for the SecuritySwitch section.
+			Settings Settings = WebConfigurationManager.GetSection("SecuritySwitch") as Settings;
 
 			return Evaluate(request, Settings, false);
 		}

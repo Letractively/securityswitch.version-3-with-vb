@@ -2,10 +2,10 @@ Imports System
 Imports System.Configuration
 Imports System.Globalization
 
-Namespace SecureSwitch.Configuration
+Namespace SecuritySwitch.Configuration
 
 	''' <summary>
-	''' Represents an file entry in the &lt;secureSwitch&gt;
+	''' Represents an file entry in the &lt;securitySwitch&gt;
 	''' configuration section.
 	''' </summary>
 	Public Class FileSetting

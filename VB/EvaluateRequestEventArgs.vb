@@ -1,8 +1,8 @@
 Imports System
 Imports System.Web
-Imports SecureSwitch.Configuration
+Imports SecuritySwitch.Configuration
 
-Namespace SecureSwitch
+Namespace SecuritySwitch
 
 	''' <summary>
 	''' Defines the arguments used for the EvaluateRequest event.

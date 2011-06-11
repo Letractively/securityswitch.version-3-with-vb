@@ -3,7 +3,7 @@ Imports System.Configuration
 Imports System.Globalization
 Imports System.Text.RegularExpressions
 
-Namespace SecureSwitch.Configuration
+Namespace SecuritySwitch.Configuration
 
 	''' <summary>
 	''' Indicates the type of security for a file or directory.
@@ -28,7 +28,7 @@ Namespace SecureSwitch.Configuration
 	End Enum
 
 	''' <summary>
-	''' Represents an file or directory entry in the &lt;secureSwitch&gt;
+	''' Represents an file or directory entry in the &lt;securitySwitch&gt;
 	''' configuration section.
 	''' </summary>
 	Public MustInherit Class ItemSetting

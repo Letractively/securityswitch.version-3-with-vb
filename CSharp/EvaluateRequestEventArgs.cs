@@ -1,8 +1,8 @@
 using System;
 using System.Web;
-using SecureSwitch.Configuration;
+using SecuritySwitch.Configuration;
 
-namespace SecureSwitch {
+namespace SecuritySwitch {
 
 	/// <summary>
 	/// Defines the arguments used for the EvaluateRequest event.

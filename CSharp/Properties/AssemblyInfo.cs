@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SecureSwitch")]
+[assembly: AssemblyTitle("SecuritySwitch")]
 [assembly: AssemblyDescription("An ASP.NET module for automatically switching between HTTP and HTTPS protocols without hard-coding absolute URLs.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SecureSwitch")]
+[assembly: AssemblyProduct("SecuritySwitch")]
 [assembly: AssemblyCopyright("Copyright © 2004 Matt Sollars")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

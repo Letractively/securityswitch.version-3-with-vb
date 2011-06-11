@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace SecureSwitch.Configuration {
+namespace SecuritySwitch.Configuration {
 
 	/// <summary>
 	/// Indicates the type of security for a file or directory.
@@ -28,7 +28,7 @@ namespace SecureSwitch.Configuration {
 	}
 
 	/// <summary>
-	/// Represents an file or directory entry in the &lt;secureSwitch&gt;
+	/// Represents an file or directory entry in the &lt;securitySwitch&gt;
 	/// configuration section.
 	/// </summary>
 	public abstract class ItemSetting : ConfigurationElement {

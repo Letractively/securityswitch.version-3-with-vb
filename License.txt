@@ -1,7 +1,7 @@
 BSD License
 
 
-SecureSwitch Module for .NET
+SecuritySwitch Module for .NET
 -------------------------------
 Copyright (c) 2004, Matt Sollars
 All rights reserved.

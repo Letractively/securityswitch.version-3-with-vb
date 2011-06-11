@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("SecureSwitch")> 
+<Assembly: AssemblyTitle("SecuritySwitch")> 
 <Assembly: AssemblyDescription("An ASP.NET module for automatically switching between HTTP and HTTPS protocols without hard-coding absolute URLs.")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("SecureSwitch")> 
+<Assembly: AssemblyProduct("SecuritySwitch")> 
 <Assembly: AssemblyCopyright("Copyright © 2004 Matt Sollars")> 
 <Assembly: AssemblyTrademark("")> 
 

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="SecureSwitch.v3x" targetNamespace="http://SecureSwitch.v3x.xsd" elementFormDefault="qualified" xmlns="http://SecureSwitch.v3x.xsd" xmlns:mstns="http://SecureSwitch.v3x.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:element name="secureSwitch">
+<xs:schema id="SecuritySwitch.v3x" targetNamespace="http://SecuritySwitch.v3x.xsd" elementFormDefault="qualified" xmlns="http://SecuritySwitch.v3x.xsd" xmlns:mstns="http://SecuritySwitch.v3x.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="securitySwitch">
 		<xs:complexType>
 			<xs:all minOccurs="0">
 				<xs:element name="files" minOccurs="0">

@@ -2,10 +2,10 @@ using System;
 using System.Configuration;
 using System.Globalization;
 
-namespace SecureSwitch.Configuration {
+namespace SecuritySwitch.Configuration {
 
 	/// <summary>
-	/// Represents an file entry in the &lt;secureSwitch&gt;
+	/// Represents an file entry in the &lt;securitySwitch&gt;
 	/// configuration section.
 	/// </summary>
 	public class FileSetting : ItemSetting {
